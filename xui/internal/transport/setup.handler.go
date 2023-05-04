@@ -20,13 +20,15 @@ func (h *SetupHandlers) AddClientHandler(ctx *gin.Context) {
 			"message": "Not valid user",
 			"err":     err,
 		})
+		return
 	}
 
 	if err := h.service.AddClientService(user); err != nil {
 		ctx.JSON(500, gin.H{
 			"message": "internal error",
-			"err":     err,
+			"err":     err.Error(),
 		})
+		return
 	}
 
 	ctx.JSON(200, gin.H{
@@ -41,6 +43,7 @@ func (h *SetupHandlers) DeleteClientHandler(ctx *gin.Context) {
 			"message": "Not valid user",
 			"err":     err,
 		})
+		return
 	}
 
 	if err := h.service.DeleteClientService(user); err != nil {
@@ -48,6 +51,7 @@ func (h *SetupHandlers) DeleteClientHandler(ctx *gin.Context) {
 			"message": "internal error",
 			"err":     err,
 		})
+		return
 	}
 
 	ctx.JSON(200, gin.H{
