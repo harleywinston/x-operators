@@ -1,0 +1,13 @@
+version: '3'
+services:
+  operator:
+    image: "hub.hamdocker.ir/cosmtrek/air"
+    container_name: operator
+    working_dir: "/go/src/github.com/harleywinston/x-operator"
+    env_file:
+      - "./.dev.env"
+    restart: always
+    ports:
+      - "3002:3002"
+    volumes:
+      - "/home/harley/go/src/github.com/harleywinston/x-operators:/go/src/github.com/harleywinston/x-operators"
