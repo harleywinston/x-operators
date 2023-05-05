@@ -15,59 +15,82 @@ import (
 
 type SetupServices struct{}
 
-func getFlow() string {
+func (s *SetupServices) getFlow() string {
 	return "xtls-rprx-vision-udp443"
 }
 
-func getUUID() string {
+func (s *SetupServices) getUUID() string {
 	return uuid.New().String()
 }
 
-// func getExpiryTime() int64 {
-// 	now := time.Now()
-// 	future := now.AddDate(0, 0, 30)
-// 	return future.UnixNano() / int64(time.Millisecond)
-// }
+func (s *SetupServices) setClientVless(
+	client *models.ClientModel,
+	user models.UserModel,
+	inboundID int,
+) error {
+	client.ID = inboundID
+	client.Settings = &models.VlessClientSettings{
+		Enable:     true,
+		ID:         s.getUUID(),
+		Flow:       s.getFlow(),
+		Email:      user.Email,
+		LimitIP:    2,
+		TotalGB:    107 * 10e9,
+		ExpiryTime: user.ExpiryTime,
+		TgID:       "",
+		SubID:      "",
+	}
+	return nil
+}
 
-func setClientVless(client *models.ClientModel, user models.UserModel) error {
-	var clientSetting models.ClientSettingsModel
-	client.ID = 1
+func (s *SetupServices) setClientTrojan(
+	client *models.ClientModel,
+	user models.UserModel,
+	inboundID int,
+) error {
+	client.ID = inboundID
+	client.Settings = &models.TrojanClientSettings{
+		Enable:     true,
+		Password:   user.Passwd,
+		Flow:       s.getFlow(),
+		Email:      user.Email,
+		LimitIP:    2,
+		TotalGB:    107 * 10e9,
+		ExpiryTime: user.ExpiryTime,
+		TgID:       "",
+		SubID:      "",
+	}
+	return nil
+}
 
-	clientSetting.ID = getUUID()
-	clientSetting.Flow = getFlow()
-	clientSetting.Email = user.Email
-	clientSetting.LimitIP = 2
-	clientSetting.TotalGB = 107 * 1000000000
-	clientSetting.ExpiryTime = user.ExpiryTime
-	clientSetting.TgID = ""
-	clientSetting.SubID = ""
-	clientSetting.Enable = true
-
-	settingData, err := json.Marshal(map[string][]interface{}{"clients": {clientSetting}})
+func (s *SetupServices) getClientJson(client models.ClientModel) ([]byte, error) {
+	settingsString, err := client.Settings.GetSettingsString()
 	if err != nil {
-		return &consts.CustomError{
+		return []byte{}, err
+	}
+	jsonData, err := json.Marshal(map[string]interface{}{
+		"id":       client.ID,
+		"settings": settingsString,
+	})
+	if err != nil {
+		return []byte{}, &consts.CustomError{
 			Message: consts.JSON_MARSHAL_ERROR.Message,
 			Code:    consts.JSON_MARSHAL_ERROR.Code,
 			Detail:  err.Error(),
 		}
 	}
-	client.Settings = string(settingData)
-	return nil
+	return jsonData, nil
 }
 
 func (s *SetupServices) AddClientService(user models.UserModel) error {
 	var client models.ClientModel
-	if err := setClientVless(&client, user); err != nil {
+	if err := s.setClientVless(&client, user, 1); err != nil {
 		return err
 	}
 
-	jsonReqData, err := json.Marshal(client)
+	jsonReqData, err := s.getClientJson(client)
 	if err != nil {
-		return &consts.CustomError{
-			Message: consts.JSON_MARSHAL_ERROR.Message,
-			Code:    consts.JSON_MARSHAL_ERROR.Code,
-			Detail:  err.Error(),
-		}
+		return err
 	}
 
 	apiUrl := configs.BaseURL.ResolveReference(&url.URL{Path: "xui/API/inbounds/addClient"})
