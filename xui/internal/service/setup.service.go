@@ -3,13 +3,13 @@ package service
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/url"
 
 	"github.com/google/uuid"
 
 	"github.com/harleywinston/x-operators/xui/configs"
+	"github.com/harleywinston/x-operators/xui/consts"
 	"github.com/harleywinston/x-operators/xui/internal/models"
 )
 
@@ -45,7 +45,11 @@ func setClientVless(client *models.ClientModel, user models.UserModel) error {
 
 	settingData, err := json.Marshal(map[string][]interface{}{"clients": {clientSetting}})
 	if err != nil {
-		return err
+		return &consts.CustomError{
+			Message: consts.JSON_MARSHAL_ERROR.Message,
+			Code:    consts.JSON_MARSHAL_ERROR.Code,
+			Detail:  err.Error(),
+		}
 	}
 	client.Settings = string(settingData)
 	return nil
@@ -59,32 +63,40 @@ func (s *SetupServices) AddClientService(user models.UserModel) error {
 
 	jsonReqData, err := json.Marshal(client)
 	if err != nil {
-		return err
+		return &consts.CustomError{
+			Message: consts.JSON_MARSHAL_ERROR.Message,
+			Code:    consts.JSON_MARSHAL_ERROR.Code,
+			Detail:  err.Error(),
+		}
 	}
-	// log.Println(bytes.NewBuffer(jsonReqData))
 
 	apiUrl := configs.BaseURL.ResolveReference(&url.URL{Path: "xui/API/inbounds/addClient"})
 	req, err := http.NewRequest(http.MethodPost, apiUrl.String(), bytes.NewBuffer(jsonReqData))
 	if err != nil {
-		return err
+		return &consts.CustomError{
+			Message: consts.CREATE_HTTP_REQUEST_ERROR.Message,
+			Code:    consts.CREATE_HTTP_REQUEST_ERROR.Code,
+			Detail:  err.Error(),
+		}
 	}
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := configs.Clinet.Do(req)
 	if err != nil {
-		return err
+		return &consts.CustomError{
+			Message: consts.CLIENT_DO_ERROR.Message,
+			Code:    consts.CLIENT_DO_ERROR.Code,
+			Detail:  err.Error(),
+		}
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return fmt.Errorf(
-			`xui api called successfully but an error happend!
-			Status code: %v
-			Response body: %v
-			`,
-			resp.StatusCode,
-			resp.Body,
-		)
+		return &consts.CustomError{
+			Message: consts.XUI_API_ERROR.Message,
+			Code:    consts.XUI_API_ERROR.Code,
+			Detail:  err.Error(),
+		}
 	}
 
 	return nil
