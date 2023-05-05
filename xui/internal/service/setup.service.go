@@ -63,7 +63,7 @@ func (s *SetupServices) setClientTrojan(
 	return nil
 }
 
-func (s *SetupServices) getClientJson(client models.ClientModel) ([]byte, error) {
+func (s *SetupServices) getReqClientJson(client models.ClientModel) ([]byte, error) {
 	settingsString, err := client.Settings.GetSettingsString()
 	if err != nil {
 		return []byte{}, err
@@ -82,13 +82,52 @@ func (s *SetupServices) getClientJson(client models.ClientModel) ([]byte, error)
 	return jsonData, nil
 }
 
+func (s *SetupServices) ListInbounds() ([]models.InboundStatsModel, error) {
+	var list []models.InboundStatsModel
+
+	apiURL := configs.BaseURL.ResolveReference(&url.URL{Path: "/xui/API/inbounds/list"})
+	req, err := http.NewRequest(http.MethodGet, apiURL.String(), nil)
+	if err != nil {
+		return []models.InboundStatsModel{}, &consts.CustomError{
+			Message: consts.CREATE_HTTP_REQUEST_ERROR.Message,
+			Code:    consts.CREATE_HTTP_REQUEST_ERROR.Code,
+			Detail:  err.Error(),
+		}
+	}
+	resp, err := configs.Clinet.Do(req)
+	if resp.StatusCode != 200 {
+		return []models.InboundStatsModel{}, &consts.CustomError{
+			Message: consts.XUI_API_ERROR.Message,
+			Code:    consts.XUI_API_ERROR.Code,
+			Detail:  err.Error(),
+		}
+	}
+
+	type ApiOutput struct {
+		Obj []models.InboundStatsModel `json:"obj"`
+	}
+
+	var respJson ApiOutput
+	err = json.NewDecoder(resp.Body).Decode(&respJson)
+	if err != nil {
+		return []models.InboundStatsModel{}, &consts.CustomError{
+			Message: consts.JSON_UNMARSHAL_ERROR.Message,
+			Code:    consts.JSON_UNMARSHAL_ERROR.Code,
+			Detail:  err.Error(),
+		}
+	}
+	list = respJson.Obj
+
+	return list, nil
+}
+
 func (s *SetupServices) AddClientService(user models.UserModel) error {
 	var client models.ClientModel
 	if err := s.setClientVless(&client, user, 1); err != nil {
 		return err
 	}
 
-	jsonReqData, err := s.getClientJson(client)
+	jsonReqData, err := s.getReqClientJson(client)
 	if err != nil {
 		return err
 	}

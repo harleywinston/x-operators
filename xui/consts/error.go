@@ -13,8 +13,9 @@ func (e *CustomError) Error() string {
 }
 
 var (
-	JSON_MARSHAL_ERROR = &CustomError{Message: "Json marshal mathers failed!", Code: 500}
-	BIND_JSON_ERROR    = &CustomError{Message: "Bind json failed!", Code: 500}
+	JSON_MARSHAL_ERROR   = &CustomError{Message: "Json marshal mathers failed!", Code: 500}
+	JSON_UNMARSHAL_ERROR = &CustomError{Message: "Json unmarshal unmathers failed!", Code: 500}
+	BIND_JSON_ERROR      = &CustomError{Message: "Bind json failed!", Code: 500}
 
 	ADD_SUCCESS    = &CustomError{Message: "Add succeed.", Code: 200}
 	DELETE_SUCCESS = &CustomError{Message: "Delete succeed.", Code: 200}
