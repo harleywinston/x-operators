@@ -42,6 +42,21 @@ func (h *SetupHandlers) AddClientHandler(ctx *gin.Context) {
 	})
 }
 
+func (h *SetupHandlers) ListInboundsHandler(ctx *gin.Context) {
+	list, err := h.service.ListInbounds()
+	if err != nil {
+		if e, ok := err.(*consts.CustomError); ok {
+			ctx.JSON(e.Code, gin.H{
+				"message": e.Message,
+				"detail":  e.Detail,
+			})
+		}
+		return
+	}
+
+	ctx.JSON(200, list)
+}
+
 func (h *SetupHandlers) DeleteClientHandler(ctx *gin.Context) {
 	var user models.UserModel
 	err := ctx.BindJSON(&user)

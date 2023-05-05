@@ -13,6 +13,7 @@ func registerHandlers() error {
 	setupHandlers := transport.SetupHandlers{}
 	r.POST("/add", setupHandlers.AddClientHandler)
 	r.DELETE("/delete", setupHandlers.DeleteClientHandler)
+	r.GET("/list", setupHandlers.ListInboundsHandler)
 
 	if err := r.Run(); err != nil {
 		return err
