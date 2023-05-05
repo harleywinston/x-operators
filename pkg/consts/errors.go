@@ -16,4 +16,5 @@ var (
 	URL_PARSE_ERROR      = &CustomError{Message: "URL parse failed!", Code: 500}
 	JSON_MARSHAL_ERROR   = &CustomError{Message: "Json marshal mathers failed!", Code: 500}
 	JSON_UNMARSHAL_ERROR = &CustomError{Message: "Json unmarshal unmathers failed!", Code: 500}
+	XUI_DRIVER_ERROR     = &CustomError{Message: "XUI DRIVER ERROR!", Code: 500}
 )

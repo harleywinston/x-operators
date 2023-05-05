@@ -120,10 +120,20 @@ func (s *SetupServices) ListInbounds() ([]models.InboundStatsModel, error) {
 	return list, nil
 }
 
-func (s *SetupServices) AddClientService(user models.UserModel) error {
+func (s *SetupServices) AddClientService(
+	user models.UserModel,
+	inbound models.InboundStatsModel,
+) error {
 	var client models.ClientModel
-	if err := s.setClientVless(&client, user, 1); err != nil {
-		return err
+	if inbound.Protocol == "vless" {
+		if err := s.setClientVless(&client, user, inbound.ID); err != nil {
+			return err
+		}
+	}
+	if inbound.Protocol == "trojan" {
+		if err := s.setClientTrojan(&client, user, inbound.ID); err != nil {
+			return err
+		}
 	}
 
 	jsonReqData, err := s.getReqClientJson(client)
@@ -163,6 +173,9 @@ func (s *SetupServices) AddClientService(user models.UserModel) error {
 	return nil
 }
 
-func (s *SetupServices) DeleteClientService(user models.UserModel) error {
+func (s *SetupServices) DeleteClientService(
+	client models.ClientStatsModel,
+	inbound models.InboundStatsModel,
+) error {
 	return nil
 }
