@@ -8,9 +8,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/harleywinston/x-operators/xui/configs"
+	"github.com/harleywinston/x-operators/pkg/models"
 	"github.com/harleywinston/x-operators/xui/consts"
-	"github.com/harleywinston/x-operators/xui/internal/models"
 )
 
 type SetupServices struct{}
@@ -85,7 +84,7 @@ func (s *SetupServices) getReqClientJson(client models.ClientModel) ([]byte, err
 func (s *SetupServices) ListInbounds() ([]models.InboundStatsModel, error) {
 	var list []models.InboundStatsModel
 
-	apiURL := configs.BaseURL.ResolveReference(&url.URL{Path: "/xui/API/inbounds/list"})
+	apiURL := consts.BaseURL.ResolveReference(&url.URL{Path: "/xui/API/inbounds/list"})
 	req, err := http.NewRequest(http.MethodGet, apiURL.String(), nil)
 	if err != nil {
 		return []models.InboundStatsModel{}, &consts.CustomError{
@@ -94,7 +93,7 @@ func (s *SetupServices) ListInbounds() ([]models.InboundStatsModel, error) {
 			Detail:  err.Error(),
 		}
 	}
-	resp, err := configs.Clinet.Do(req)
+	resp, err := consts.Clinet.Do(req)
 	if resp.StatusCode != 200 {
 		return []models.InboundStatsModel{}, &consts.CustomError{
 			Message: consts.XUI_API_ERROR.Message,
@@ -132,7 +131,7 @@ func (s *SetupServices) AddClientService(user models.UserModel) error {
 		return err
 	}
 
-	apiUrl := configs.BaseURL.ResolveReference(&url.URL{Path: "xui/API/inbounds/addClient"})
+	apiUrl := consts.BaseURL.ResolveReference(&url.URL{Path: "xui/API/inbounds/addClient"})
 	req, err := http.NewRequest(http.MethodPost, apiUrl.String(), bytes.NewBuffer(jsonReqData))
 	if err != nil {
 		return &consts.CustomError{
@@ -143,7 +142,7 @@ func (s *SetupServices) AddClientService(user models.UserModel) error {
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := configs.Clinet.Do(req)
+	resp, err := consts.Clinet.Do(req)
 	if err != nil {
 		return &consts.CustomError{
 			Message: consts.CLIENT_DO_ERROR.Message,

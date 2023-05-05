@@ -3,7 +3,7 @@ package main
 import (
 	"time"
 
-	"github.com/harleywinston/x-operators/internal/services"
+	"github.com/harleywinston/x-operators/pkg/services"
 )
 
 func registerSyncer() error {

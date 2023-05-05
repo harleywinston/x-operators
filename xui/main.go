@@ -3,8 +3,8 @@ package xui
 import (
 	"github.com/gin-gonic/gin"
 
-	"github.com/harleywinston/x-operators/xui/configs"
-	"github.com/harleywinston/x-operators/xui/internal/transport"
+	"github.com/harleywinston/x-operators/xui/consts"
+	"github.com/harleywinston/x-operators/xui/pkg/transport"
 )
 
 func registerHandlers() error {
@@ -22,7 +22,7 @@ func registerHandlers() error {
 }
 
 func InitApp() error {
-	if err := configs.InitApiSession(); err != nil {
+	if err := consts.InitApiSession(); err != nil {
 		return err
 	}
 	if err := registerHandlers(); err != nil {

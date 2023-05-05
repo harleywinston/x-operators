@@ -5,9 +5,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/harleywinston/x-operators/pkg/models"
 	"github.com/harleywinston/x-operators/xui/consts"
-	"github.com/harleywinston/x-operators/xui/internal/models"
-	"github.com/harleywinston/x-operators/xui/internal/service"
+	"github.com/harleywinston/x-operators/xui/pkg/service"
 )
 
 type SetupHandlers struct {

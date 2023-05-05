@@ -3,11 +3,31 @@ package models
 import (
 	"encoding/json"
 
-	"github.com/harleywinston/x-operators/xui/consts"
+	"github.com/harleywinston/x-operators/pkg/consts"
 )
+
+type StreamSettingsInterface interface{}
+
+type SniffingInterface interface{}
 
 type ClientSettings interface {
 	GetSettingsString() (string, error)
+}
+
+type ClientStatsModel struct {
+	ID        int    `json:"id"`
+	Email     string `json:"email"`
+	Enable    bool   `json:"enable"`
+	InboundID int    `json:"inboundId"`
+}
+
+type InboundStatsModel struct {
+	ID             int                     `json:"id"`
+	Port           int                     `json:"port"`
+	Protocol       string                  `json:"protocol"`
+	StreamSettings StreamSettingsInterface `json:"streamSettings"`
+	Sniffing       SniffingInterface       `json:"sniffing"`
+	ClientStats    []ClientStatsModel      `json:"clientStats"`
 }
 
 type VlessClientSettings struct {
