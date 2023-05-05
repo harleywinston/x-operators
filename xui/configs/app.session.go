@@ -16,7 +16,7 @@ var (
 )
 
 func InitApiSession() error {
-	baseURL, err := url.Parse(os.Getenv("BASE_URL"))
+	baseURL, err := url.Parse(os.Getenv("XUI_BASE_URL"))
 	if err != nil {
 		return err
 	}
@@ -34,7 +34,10 @@ func InitApiSession() error {
 	loginURL := BaseURL.ResolveReference(&url.URL{Path: "login"})
 	resp, err := Clinet.PostForm(
 		loginURL.String(),
-		url.Values{"username": {os.Getenv("USERNAME")}, "password": {os.Getenv("PASSWORD")}},
+		url.Values{
+			"username": {os.Getenv("XUI_USERNAME")},
+			"password": {os.Getenv("XUI_PASSWORD")},
+		},
 	)
 	if err != nil {
 		return err
