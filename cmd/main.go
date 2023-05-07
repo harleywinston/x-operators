@@ -3,9 +3,11 @@ package main
 import (
 	"log"
 
-	cmd "github.com/harleywinston/x-operators/cmd/xui"
+	syncercmd "github.com/harleywinston/x-operators/cmd/syncer"
+	xuicmd "github.com/harleywinston/x-operators/cmd/xui"
 )
 
 func main() {
-	log.Fatal(cmd.Setupxui())
+	go log.Fatal(xuicmd.Setupxui())
+	go log.Fatal(syncercmd.SetupSyncer())
 }

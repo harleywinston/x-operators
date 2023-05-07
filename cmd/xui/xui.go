@@ -1,4 +1,4 @@
-package cmd
+package xuicmd
 
 import "github.com/harleywinston/x-operators/xui"
 

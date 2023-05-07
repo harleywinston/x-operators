@@ -1,6 +1,7 @@
 package consts
 
 import (
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -23,5 +24,9 @@ func InitAPISession() error {
 	BaseURL = baseURL
 
 	HTTPClient = &http.Client{}
+
+	log.Println(BaseURL.String())
+	req, err := http.NewRequest(http.MethodGet, BaseURL.String(), nil)
+	log.Println(HTTPClient.Do(req))
 	return nil
 }
