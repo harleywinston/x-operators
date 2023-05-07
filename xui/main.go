@@ -1,7 +1,7 @@
 package xui
 
 import (
-	"github.com/harleywinston/x-operators/xui/api"
+	"github.com/harleywinston/x-operators/xui/helper"
 )
 
 // func registerHandlers() error {
@@ -19,7 +19,7 @@ import (
 // }
 
 func InitDriver() error {
-	if err := api.InitApiSession(); err != nil {
+	if err := helper.InitApiSession(); err != nil {
 		return err
 	}
 	// if err := registerHandlers(); err != nil {

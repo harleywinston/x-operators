@@ -1,8 +1,6 @@
 package services
 
 import (
-	"log"
-
 	"github.com/harleywinston/x-operators/pkg/consts"
 	"github.com/harleywinston/x-operators/pkg/models"
 	"github.com/harleywinston/x-operators/xui/pkg/driver"
@@ -19,9 +17,7 @@ func (s *SyncerServices) getMasterState() (models.MasterState, error) {
 }
 
 func (s *SyncerServices) Sync() error {
-	log.Println("hello from syncer")
 	inbounds, err := s.xuiDriver.ListInbounds()
-	log.Println(inbounds)
 	if err != nil {
 		return &consts.CustomError{
 			Message: consts.XUI_DRIVER_ERROR.Message,
@@ -33,6 +29,13 @@ func (s *SyncerServices) Sync() error {
 	masterState, err := s.getMasterState()
 	if err != nil {
 		return err
+	}
+
+	if len(masterState.Users) < 1 {
+		return consts.MANAGER_USER_COUNT_ERROR
+	}
+	if len(inbounds) < 1 {
+		return consts.INBOUND_COUNT_ERROR
 	}
 
 	for _, user := range masterState.Users {

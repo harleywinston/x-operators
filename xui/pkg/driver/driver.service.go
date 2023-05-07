@@ -10,7 +10,7 @@ import (
 
 	"github.com/harleywinston/x-operators/pkg/consts"
 	"github.com/harleywinston/x-operators/pkg/models"
-	"github.com/harleywinston/x-operators/xui/api"
+	"github.com/harleywinston/x-operators/xui/helper"
 )
 
 type DriverServices struct{}
@@ -85,7 +85,7 @@ func (s *DriverServices) getReqClientJson(client models.ClientModel) ([]byte, er
 func (s *DriverServices) ListInbounds() ([]models.InboundStatsModel, error) {
 	var list []models.InboundStatsModel
 
-	apiURL := consts.BaseURL.ResolveReference(&url.URL{Path: "/xui/API/inbounds/list"})
+	apiURL := helper.BaseURL.ResolveReference(&url.URL{Path: "/xui/API/inbounds/list"})
 	req, err := http.NewRequest(http.MethodGet, apiURL.String(), nil)
 	if err != nil {
 		return []models.InboundStatsModel{}, &consts.CustomError{
@@ -94,7 +94,7 @@ func (s *DriverServices) ListInbounds() ([]models.InboundStatsModel, error) {
 			Detail:  err.Error(),
 		}
 	}
-	resp, err := api.Clinet.Do(req)
+	resp, err := helper.Clinet.Do(req)
 	if resp.StatusCode != 200 {
 		return []models.InboundStatsModel{}, &consts.CustomError{
 			Message: consts.XUI_API_ERROR.Message,
@@ -142,7 +142,7 @@ func (s *DriverServices) AddClientService(
 		return err
 	}
 
-	apiUrl := consts.BaseURL.ResolveReference(&url.URL{Path: "xui/API/inbounds/addClient"})
+	apiUrl := helper.BaseURL.ResolveReference(&url.URL{Path: "xui/API/inbounds/addClient"})
 	req, err := http.NewRequest(http.MethodPost, apiUrl.String(), bytes.NewBuffer(jsonReqData))
 	if err != nil {
 		return &consts.CustomError{
@@ -153,7 +153,7 @@ func (s *DriverServices) AddClientService(
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := api.Clinet.Do(req)
+	resp, err := helper.Clinet.Do(req)
 	if err != nil {
 		return &consts.CustomError{
 			Message: consts.CLIENT_DO_ERROR.Message,

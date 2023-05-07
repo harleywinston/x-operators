@@ -12,7 +12,7 @@ import (
 func registerSyncer() {
 	syncerServices := services.SyncerServices{}
 
-	ticker := time.NewTicker(10 * time.Second)
+	ticker := time.NewTicker(2 * time.Second)
 
 	go func() {
 		for range ticker.C {
