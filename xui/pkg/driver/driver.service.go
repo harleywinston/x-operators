@@ -1,4 +1,4 @@
-package service
+package driver
 
 import (
 	"bytes"
@@ -8,21 +8,22 @@ import (
 
 	"github.com/google/uuid"
 
+	"github.com/harleywinston/x-operators/pkg/consts"
 	"github.com/harleywinston/x-operators/pkg/models"
-	"github.com/harleywinston/x-operators/xui/consts"
+	"github.com/harleywinston/x-operators/xui/api"
 )
 
-type SetupServices struct{}
+type DriverServices struct{}
 
-func (s *SetupServices) getFlow() string {
+func (s *DriverServices) getFlow() string {
 	return "xtls-rprx-vision-udp443"
 }
 
-func (s *SetupServices) getUUID() string {
+func (s *DriverServices) getUUID() string {
 	return uuid.New().String()
 }
 
-func (s *SetupServices) setClientVless(
+func (s *DriverServices) setClientVless(
 	client *models.ClientModel,
 	user models.UserModel,
 	inboundID int,
@@ -42,7 +43,7 @@ func (s *SetupServices) setClientVless(
 	return nil
 }
 
-func (s *SetupServices) setClientTrojan(
+func (s *DriverServices) setClientTrojan(
 	client *models.ClientModel,
 	user models.UserModel,
 	inboundID int,
@@ -62,7 +63,7 @@ func (s *SetupServices) setClientTrojan(
 	return nil
 }
 
-func (s *SetupServices) getReqClientJson(client models.ClientModel) ([]byte, error) {
+func (s *DriverServices) getReqClientJson(client models.ClientModel) ([]byte, error) {
 	settingsString, err := client.Settings.GetSettingsString()
 	if err != nil {
 		return []byte{}, err
@@ -81,7 +82,7 @@ func (s *SetupServices) getReqClientJson(client models.ClientModel) ([]byte, err
 	return jsonData, nil
 }
 
-func (s *SetupServices) ListInbounds() ([]models.InboundStatsModel, error) {
+func (s *DriverServices) ListInbounds() ([]models.InboundStatsModel, error) {
 	var list []models.InboundStatsModel
 
 	apiURL := consts.BaseURL.ResolveReference(&url.URL{Path: "/xui/API/inbounds/list"})
@@ -93,7 +94,7 @@ func (s *SetupServices) ListInbounds() ([]models.InboundStatsModel, error) {
 			Detail:  err.Error(),
 		}
 	}
-	resp, err := consts.Clinet.Do(req)
+	resp, err := api.Clinet.Do(req)
 	if resp.StatusCode != 200 {
 		return []models.InboundStatsModel{}, &consts.CustomError{
 			Message: consts.XUI_API_ERROR.Message,
@@ -120,7 +121,7 @@ func (s *SetupServices) ListInbounds() ([]models.InboundStatsModel, error) {
 	return list, nil
 }
 
-func (s *SetupServices) AddClientService(
+func (s *DriverServices) AddClientService(
 	user models.UserModel,
 	inbound models.InboundStatsModel,
 ) error {
@@ -152,7 +153,7 @@ func (s *SetupServices) AddClientService(
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := consts.Clinet.Do(req)
+	resp, err := api.Clinet.Do(req)
 	if err != nil {
 		return &consts.CustomError{
 			Message: consts.CLIENT_DO_ERROR.Message,
@@ -173,7 +174,7 @@ func (s *SetupServices) AddClientService(
 	return nil
 }
 
-func (s *SetupServices) DeleteClientService(
+func (s *DriverServices) DeleteClientService(
 	client models.ClientStatsModel,
 	inbound models.InboundStatsModel,
 ) error {

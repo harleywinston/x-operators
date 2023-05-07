@@ -6,29 +6,32 @@ import (
 
 	"github.com/harleywinston/x-operators/pkg/consts"
 	"github.com/harleywinston/x-operators/pkg/services"
+	"github.com/harleywinston/x-operators/xui"
 )
 
-func registerSyncer() error {
+func registerSyncer() {
 	syncerServices := services.SyncerServices{}
 
-	ticker := time.NewTicker(30 * time.Minute)
+	ticker := time.NewTicker(10 * time.Second)
 
-	for range ticker.C {
-		err := syncerServices.Sync()
-		if err != nil {
-			return err
+	go func() {
+		for range ticker.C {
+			err := syncerServices.Sync()
+			log.Println(err.Error())
 		}
-	}
-	return nil
+	}()
+
+	select {}
 }
 
-func InitApp() error {
+func InitSyncer() error {
+	if err := xui.InitDriver(); err != nil {
+		return err
+	}
 	if err := consts.InitAPISession(); err != nil {
 		return err
 	}
-	log.Println("aosijdfoiajd")
-	if err := registerSyncer(); err != nil {
-		return err
-	}
+	registerSyncer()
+
 	return nil
 }

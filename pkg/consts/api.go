@@ -26,7 +26,33 @@ func InitAPISession() error {
 	HTTPClient = &http.Client{}
 
 	log.Println(BaseURL.String())
-	req, err := http.NewRequest(http.MethodGet, BaseURL.String(), nil)
-	log.Println(HTTPClient.Do(req))
+	// req, err := http.NewRequest(http.MethodGet, BaseURL.String(), nil)
+	// if err != nil {
+	// 	return &CustomError{
+	// 		Message: MANAGER_CONNECTION_ERROR.Message,
+	// 		Code:    MANAGER_CONNECTION_ERROR.Code,
+	// 		Detail:  err.Error(),
+	// 	}
+	// }
+	// resp, err := HTTPClient.Do(req)
+	// if err != nil {
+	// 	return &CustomError{
+	// 		Message: MANAGER_CONNECTION_ERROR.Message,
+	// 		Code:    MANAGER_CONNECTION_ERROR.Code,
+	// 		Detail:  err.Error(),
+	// 	}
+	// }
+	// var respData string
+	// err = json.NewDecoder(resp.Body).Decode(&respData)
+	// if err != nil {
+	// 	return &CustomError{
+	// 		Message: JSON_UNMARSHAL_ERROR.Message,
+	// 		Code:    JSON_UNMARSHAL_ERROR.Code,
+	// 		Detail:  err.Error(),
+	// 	}
+	// }
+	//
+	// log.Println(respData)
+
 	return nil
 }

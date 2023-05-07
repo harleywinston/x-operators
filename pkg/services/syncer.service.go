@@ -1,13 +1,15 @@
 package services
 
 import (
+	"log"
+
 	"github.com/harleywinston/x-operators/pkg/consts"
 	"github.com/harleywinston/x-operators/pkg/models"
-	"github.com/harleywinston/x-operators/xui/pkg/service"
+	"github.com/harleywinston/x-operators/xui/pkg/driver"
 )
 
 type SyncerServices struct {
-	xuiService service.SetupServices
+	xuiDriver driver.DriverServices
 }
 
 func (s *SyncerServices) getMasterState() (models.MasterState, error) {
@@ -17,7 +19,9 @@ func (s *SyncerServices) getMasterState() (models.MasterState, error) {
 }
 
 func (s *SyncerServices) Sync() error {
-	inbounds, err := s.xuiService.ListInbounds()
+	log.Println("hello from syncer")
+	inbounds, err := s.xuiDriver.ListInbounds()
+	log.Println(inbounds)
 	if err != nil {
 		return &consts.CustomError{
 			Message: consts.XUI_DRIVER_ERROR.Message,
@@ -41,7 +45,7 @@ func (s *SyncerServices) Sync() error {
 			}
 
 			if !hasClient {
-				err := s.xuiService.AddClientService(user, i)
+				err := s.xuiDriver.AddClientService(user, i)
 				if err != nil {
 					return &consts.CustomError{
 						Message: consts.XUI_DRIVER_ERROR.Message,
@@ -63,7 +67,7 @@ func (s *SyncerServices) Sync() error {
 			}
 
 			if !hasUser {
-				err := s.xuiService.DeleteClientService(client, i)
+				err := s.xuiDriver.DeleteClientService(client, i)
 				if err != nil {
 					return &consts.CustomError{
 						Message: consts.XUI_DRIVER_ERROR.Message,

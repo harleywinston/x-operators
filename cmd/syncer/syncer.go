@@ -1,7 +1,9 @@
 package syncercmd
 
-import syncer "github.com/harleywinston/x-operators/pkg/app"
+import (
+	syncer "github.com/harleywinston/x-operators/pkg/app"
+)
 
 func SetupSyncer() error {
-	return syncer.InitApp()
+	return syncer.InitSyncer()
 }
