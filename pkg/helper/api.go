@@ -1,10 +1,12 @@
-package consts
+package helper
 
 import (
 	"log"
 	"net/http"
 	"net/url"
 	"os"
+
+	"github.com/harleywinston/x-operators/pkg/consts"
 )
 
 var (
@@ -15,9 +17,9 @@ var (
 func InitAPISession() error {
 	baseURL, err := url.Parse(os.Getenv("MANAGER_BASE_URL"))
 	if err != nil {
-		return &CustomError{
-			Message: URL_PARSE_ERROR.Message,
-			Code:    URL_PARSE_ERROR.Code,
+		return &consts.CustomError{
+			Message: consts.URL_PARSE_ERROR.Message,
+			Code:    consts.URL_PARSE_ERROR.Code,
 			Detail:  err.Error(),
 		}
 	}
