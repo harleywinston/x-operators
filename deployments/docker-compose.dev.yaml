@@ -11,3 +11,9 @@ services:
       - "3002:3002"
     volumes:
       - "/home/harley/go/src/github.com/harleywinston/x-operators:/go/src/github.com/harleywinston/x-operators"
+    networks:
+      - x
+networks:
+  x:
+    name: x
+    external: true
