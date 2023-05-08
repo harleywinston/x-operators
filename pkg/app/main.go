@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/harleywinston/x-operators/pkg/consts"
+	"github.com/harleywinston/x-operators/pkg/helper"
 	"github.com/harleywinston/x-operators/pkg/services"
 	"github.com/harleywinston/x-operators/xui"
 )
@@ -28,7 +28,7 @@ func InitSyncer() error {
 	if err := xui.InitDriver(); err != nil {
 		return err
 	}
-	if err := consts.InitAPISession(); err != nil {
+	if err := helper.InitAPISession(); err != nil {
 		return err
 	}
 	registerSyncer()
