@@ -58,7 +58,7 @@ func (s *DriverServices) setClientTrojan(
 		TotalGB:    107 * 10e9,
 		ExpiryTime: user.ExpiryTime,
 		TgID:       "",
-		SubID:      "",
+		SubID:      user.Username,
 	}
 	return nil
 }
