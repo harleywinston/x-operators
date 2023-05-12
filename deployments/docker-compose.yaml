@@ -1,0 +1,10 @@
+version: '3'
+services:
+  operator:
+    image: "harleywinston/x-operators:0.1"
+    container_name: x-operators
+    env_file:
+      - ".env"
+    restart: always
+    ports:
+      - "3002:3002"
