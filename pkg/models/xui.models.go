@@ -56,7 +56,7 @@ func (c *VlessClientSettings) GetSettingsString() (string, error) {
 }
 
 type TrojanClientSettings struct {
-	Password   string `json:"Password"`
+	Password   string `json:"password"`
 	Flow       string `json:"flow"`
 	Email      string `json:"email"`
 	LimitIP    int    `json:"limitIp"`

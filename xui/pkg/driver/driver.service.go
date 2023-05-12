@@ -3,6 +3,7 @@ package driver
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 
@@ -33,9 +34,9 @@ func (s *DriverServices) setClientVless(
 		Enable:     true,
 		ID:         s.getUUID(),
 		Flow:       s.getFlow(),
-		Email:      user.Email,
+		Email:      fmt.Sprintf("%s%d", user.Email, inboundID),
 		LimitIP:    2,
-		TotalGB:    107 * 10e9,
+		TotalGB:    107 * 10e8,
 		ExpiryTime: user.ExpiryTime,
 		TgID:       "",
 		SubID:      "",
@@ -52,13 +53,13 @@ func (s *DriverServices) setClientTrojan(
 	client.Settings = &models.TrojanClientSettings{
 		Enable:     true,
 		Password:   user.Passwd,
-		Flow:       s.getFlow(),
-		Email:      user.Email,
+		Flow:       "",
+		Email:      fmt.Sprintf("%s%d", user.Email, inboundID),
 		LimitIP:    2,
-		TotalGB:    107 * 10e9,
+		TotalGB:    107 * 10e8,
 		ExpiryTime: user.ExpiryTime,
 		TgID:       "",
-		SubID:      user.Username,
+		SubID:      "",
 	}
 	return nil
 }
@@ -68,6 +69,10 @@ func (s *DriverServices) getReqClientJson(client models.ClientModel) ([]byte, er
 	if err != nil {
 		return []byte{}, err
 	}
+	// log.Println(map[string]interface{}{
+	// 	"id":       client.ID,
+	// 	"settings": settingsString,
+	// })
 	jsonData, err := json.Marshal(map[string]interface{}{
 		"id":       client.ID,
 		"settings": settingsString,
@@ -163,6 +168,20 @@ func (s *DriverServices) AddClientService(
 	}
 	defer resp.Body.Close()
 
+	// type respType struct {
+	// 	Msg     string `json:"msg"`
+	// 	Success bool   `json:"success"`
+	// }
+	// var respJson respType
+	// err = json.NewDecoder(resp.Body).Decode(&respJson)
+	// log.Println(respJson)
+	// if err != nil {
+	// 	return &consts.CustomError{
+	// 		Message: consts.XUI_API_ERROR.Message,
+	// 		Code:    consts.XUI_API_ERROR.Code,
+	// 		Detail:  err.Error(),
+	// 	}
+	// }
 	if resp.StatusCode != 200 {
 		return &consts.CustomError{
 			Message: consts.XUI_API_ERROR.Message,

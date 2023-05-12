@@ -1,6 +1,11 @@
 package services
 
 import (
+	"encoding/json"
+	"net/http"
+	"os"
+	"strings"
+
 	"github.com/harleywinston/x-operators/pkg/consts"
 	"github.com/harleywinston/x-operators/pkg/models"
 	"github.com/harleywinston/x-operators/xui/pkg/driver"
@@ -12,6 +17,34 @@ type SyncerServices struct {
 
 func (s *SyncerServices) getMasterState() (models.MasterState, error) {
 	var res models.MasterState
+
+	HTTPClient := &http.Client{}
+	req, err := http.NewRequest(http.MethodGet, os.Getenv("MANAGER_BASE_URL")+"/state", nil)
+	if err != nil {
+		return models.MasterState{}, &consts.CustomError{
+			Message: consts.CREATE_HTTP_REQUEST_ERROR.Message,
+			Code:    consts.CREATE_HTTP_REQUEST_ERROR.Code,
+			Detail:  err.Error(),
+		}
+	}
+
+	resp, err := HTTPClient.Do(req)
+	if err != nil {
+		return models.MasterState{}, &consts.CustomError{
+			Message: consts.CLIENT_DO_ERROR.Message,
+			Code:    consts.CLIENT_DO_ERROR.Code,
+			Detail:  err.Error(),
+		}
+	}
+
+	err = json.NewDecoder(resp.Body).Decode(&res)
+	if err != nil {
+		return models.MasterState{}, &consts.CustomError{
+			Message: consts.JSON_UNMARSHAL_ERROR.Message,
+			Code:    consts.JSON_UNMARSHAL_ERROR.Code,
+			Detail:  err.Error(),
+		}
+	}
 
 	return res, nil
 }
@@ -42,7 +75,7 @@ func (s *SyncerServices) Sync() error {
 		for _, i := range inbounds {
 			hasClient := false
 			for _, client := range i.ClientStats {
-				if user.Email == client.Email {
+				if strings.HasPrefix(client.Email, user.Email) {
 					hasClient = true
 				}
 			}
@@ -64,7 +97,7 @@ func (s *SyncerServices) Sync() error {
 		for _, client := range i.ClientStats {
 			hasUser := false
 			for _, user := range masterState.Users {
-				if user.Email == client.Email {
+				if strings.HasPrefix(client.Email, user.Email) {
 					hasUser = true
 				}
 			}
