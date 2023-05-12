@@ -1,7 +1,7 @@
 version: '3'
 services:
   operator:
-    image: "harleywinston/x-operators"
+    image: "harleywinston/x-operators:0.1"
     container_name: x-operators
     env_file:
       - ".env"
