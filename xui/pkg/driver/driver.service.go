@@ -39,7 +39,7 @@ func (s *DriverServices) setClientVless(
 		TotalGB:    107 * 10e8,
 		ExpiryTime: user.ExpiryTime,
 		TgID:       "",
-		SubID:      "",
+		SubID:      user.Username,
 	}
 	return nil
 }
@@ -59,7 +59,7 @@ func (s *DriverServices) setClientTrojan(
 		TotalGB:    107 * 10e8,
 		ExpiryTime: user.ExpiryTime,
 		TgID:       "",
-		SubID:      "",
+		SubID:      user.Username,
 	}
 	return nil
 }
