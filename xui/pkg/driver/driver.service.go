@@ -186,7 +186,7 @@ func (s *DriverServices) AddClientService(
 		return &consts.CustomError{
 			Message: consts.XUI_API_ERROR.Message,
 			Code:    consts.XUI_API_ERROR.Code,
-			Detail:  err.Error(),
+			Detail:  "",
 		}
 	}
 
